@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coucou !</title>
+    <style>
+        body {
+            background-color: #ffe6e6;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Utilise min-height pour permettre le défilement si besoin */
+            margin: 0;
+            text-align: center;
+            overflow-x: hidden; /* Empêche le défilement horizontal */
+            padding: 20px; /* Ajoute un peu d'espace autour */
+        }
+
+        /* Styles communs */
+        h1 {
+            color: #d63384;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            padding: 0 10px;
+            max-width: 700px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        /* Page 1 : Accueil */
+        #page-intro {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.8s;
+        }
+
+        #btn-start {
+            background-color: #d63384;
+            color: white;
+            box-shadow: 0 4px 15px rgba(214, 51, 132, 0.3);
+        }
+
+        /* Page 2 : La Question (cachée au début) */
+        #page-question {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.8s;
+            /* Important pour que le bouton NON ne sorte pas de cette zone */
+            position: relative; 
+            width: 100%;
+            height: 80vh; /* Définit une zone de jeu pour le bouton */
+            justify-content: center;
+        }
+
+        .buttons-group {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #btn-yes {
+            background-color: #28a745;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+            z-index: 10;
+        }
+
+        #btn-no {
+            background-color: #dc3545;
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        /* Page 3 : Succès */
+        #page-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1s;
+            padding-bottom: 30px; /* Espace en bas pour le défilement */
+        }
+
+        #page-success h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        /* Conteneur pour les photos */
+        .photo-gallery {
+            display: flex;
+            flex-direction: column; /* Photos les unes sous les autres sur mobile */
+            gap: 20px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        /* Style des photos */
+        .couple-photo {
+            max-width: 90%; /* S'adapte à la largeur de l'écran */
+            width: 300px;   /* Largeur par défaut */
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            border: 4px solid white; /* Petit cadre blanc sympa */
+            transition: transform 0.3s;
+        }
+
+        .couple-photo:hover {
+            transform: scale(1.03); /* Léger zoom au survol */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pour les écrans plus larges, on peut mettre les photos côte à côte */
+        @media (min-width: 768px) {
+            .photo-gallery {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="page-intro">
+        <h1>Salut :s j’ai besoin de te dire qqc …</h1>
+        <button id="btn-start" onclick="showQuestion()">sharkobelette m’as aidé</button>
+    </div>
+
+    <div id="page-question">
+        <h1>Je pense énormément à toi, je suis aussi persuadé que tu te trompes sur nous. j’aimerais bien qu’on soit amoureux jusqu’à la fin des temps ❤️</h1>
+        <div class="buttons-group">
+            <button id="btn-yes" onclick="showSuccess()">j’accepte 🤗😋</button>
+            <button id="btn-no" onmouseover="moveButton()" ontouchstart="moveButton()">NON 👎</button>
+        </div>
+    </div>
+
+    <div id="page-success">
+        <h1>❤️🤪</h1>
+        
+        <div class="photo-gallery">
+            <img class="couple-photo" src="https://i.postimg.cc/SRMm43Z2/IMG-7411.jpg" alt="amour">
+            
+            <img class="couple-photo" src="https://i.postimg.cc/WzHSGfTV/IMG-7886.png" alt="Autre photo de nous">
+
+            <img class="couple-photo" src="https://i.postimg.cc/vmb7Vdfc/IMG-0294.jpg" alt="Encore une photo">
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour passer de l'intro à la question
+        function showQuestion() {
+            document.getElementById('page-intro').style.display = 'none';
+            document.getElementById('page-question').style.display = 'flex';
+        }
+
+        // Fonction pour faire fuir le bouton NON
+        function moveButton() {
+            const btnNo = document.getElementById('btn-no');
+            const questionPage = document.getElementById('page-question');
+            
+            // Calculer les limites à l'intérieur de la page de question
+            const maxWidth = questionPage.offsetWidth - btnNo.offsetWidth;
+            const maxHeight = questionPage.offsetHeight - btnNo.offsetHeight;
+
+            // S'assurer que les valeurs ne sont pas négatives
+            const randomX = Math.max(0, Math.floor(Math.random() * maxWidth));
+            const randomY = Math.max(0, Math.floor(Math.random() * maxHeight));
+
+            btnNo.style.position = 'absolute'; // Utilise 'absolute' par rapport au conteneur
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+        }
+
+        // Fonction finale
+        function showSuccess() {
+            document.getElementById('page-question').style.display = 'none';
+            document.getElementById('page-success').style.display = 'flex';
+            // Permettre le défilement sur la page finale pour voir toutes les photos
+            document.body.style.overflowY = 'auto';
+            document.body.style.height = 'auto';
+        }
+    </script>
+
+</body>
+</html>
+
