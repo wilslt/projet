@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadeau Interactif</title>
+    <title>Cadeau Interactif pour ma copine</title>
     <style>
         /* === STYLE GÉNÉRAL === */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffe6ea; /* Un petit fond rose pâle sympa */
+            background-color: #ffe6ea; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,67 +27,67 @@
             align-items: center;
         }
 
-        /* Le bouton cadeau principal */
+        /* Le bouton cadeau principal (transparent, on ne verra que ton image) */
         .gift-btn {
-            font-size: 5rem;
             background: none;
             border: none;
             cursor: pointer;
             z-index: 10;
             transition: transform 0.3s;
-            filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.2));
+            padding: 0;
+        }
+
+        .gift-btn img {
+            width: 120px; /* Taille de ton image de cadeau */
+            filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.2));
         }
 
         .gift-btn:hover {
-            transform: scale(1.1) rotate(5deg); /* Petit effet au survol */
+            transform: scale(1.1) rotate(5deg);
         }
 
         /* === LES OBJETS CACHÉS === */
         .item-btn {
             position: absolute;
-            font-size: 2.5rem;
-            background: #fff;
-            border: 3px solid #ffb6c1;
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
+            background: none;
+            border: none;
             cursor: pointer;
-            opacity: 0; /* Cachés par défaut */
+            opacity: 0; 
             z-index: 5;
             top: 50%;
             left: 50%;
-            margin-top: -35px;
-            margin-left: -35px;
-            /* L'animation avec un petit rebond (cubic-bezier) */
+            margin-top: -30px; /* Moitié de la hauteur */
+            margin-left: -30px; /* Moitié de la largeur */
+            pointer-events: none; /* CORRECTION DU BUG : impossible de cliquer quand c'est caché */
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
         }
 
-        .item-btn:hover {
-            transform: scale(1.2) !important;
-            border-color: #ff6b81;
+        .item-btn img {
+            width: 60px; /* Taille des petits objets */
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.15));
         }
 
-        /* === ANIMATION : QUAND LE CADEAU EST OUVERT === */
-        /* On déplace les objets dans 4 directions différentes */
-        .container-opened .item-btn[data-id="fleurs"] {
-            transform: translate(-100px, -100px) scale(1);
+        /* On définit les directions pour chaque objet avec des variables CSS */
+        .item-btn[data-id="fleurs"]   { --x: -110px; --y: -110px; }
+        .item-btn[data-id="biscuit"]  { --x: 110px;  --y: -110px; }
+        .item-btn[data-id="chocolat"] { --x: -110px; --y: 110px; }
+        .item-btn[data-id="peluche"]  { --x: 110px;  --y: 110px; }
+
+        /* === ANIMATION QUAND LE CADEAU EST OUVERT === */
+        .container-opened .item-btn {
             opacity: 1;
+            pointer-events: auto; /* On rend les clics possibles */
+            /* On utilise les variables pour qu'ils aillent à leur place */
+            transform: translate(var(--x), var(--y)) scale(1);
         }
-        .container-opened .item-btn[data-id="biscuit"] {
-            transform: translate(100px, -100px) scale(1);
-            opacity: 1;
-        }
-        .container-opened .item-btn[data-id="chocolat"] {
-            transform: translate(-100px, 100px) scale(1);
-            opacity: 1;
-        }
-        .container-opened .item-btn[data-id="peluche"] {
-            transform: translate(100px, 100px) scale(1);
-            opacity: 1;
+
+        /* CORRECTION DU BUG : On garde la position (var) pendant le zoom (scale) au survol */
+        .container-opened .item-btn:hover {
+            transform: translate(var(--x), var(--y)) scale(1.2);
         }
 
         /* === LA FENÊTRE QUI AFFICHE LA PHOTO/MOT (MODALE) === */
+        /* (Même code que la dernière fois, il marchait très bien !) */
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -101,7 +101,7 @@
         }
         .modal.hidden {
             opacity: 0;
-            pointer-events: none; /* Empêche de cliquer quand c'est caché */
+            pointer-events: none; 
         }
         .modal-content {
             background: white;
@@ -141,12 +141,22 @@
 <body>
 
     <div id="gift-container">
-        <button id="gift-btn" class="gift-btn">🎁</button>
+        <button id="gift-btn" class="gift-btn">
+            <img src="images/cadeau.png" alt="Ouvrir le cadeau">
+        </button>
         
-        <button class="item-btn" data-id="fleurs">💐</button>
-        <button class="item-btn" data-id="biscuit">🥠</button>
-        <button class="item-btn" data-id="chocolat">🍫</button>
-        <button class="item-btn" data-id="peluche">🧸</button>
+        <button class="item-btn" data-id="fleurs">
+            <img src="images/bouquet.png" alt="Fleurs">
+        </button>
+        <button class="item-btn" data-id="biscuit">
+            <img src="images/biscuit.png" alt="Biscuit chinois">
+        </button>
+        <button class="item-btn" data-id="chocolat">
+            <img src="images/chocolat.png" alt="Chocolat">
+        </button>
+        <button class="item-btn" data-id="peluche">
+            <img src="images/peluche.png" alt="Peluche">
+        </button>
     </div>
 
     <div id="modal" class="modal hidden">
@@ -158,28 +168,26 @@
     </div>
 
     <script>
-        // === 1. TES MOTS DOUX ET TES PHOTOS ===
-        // Change les textes et les chemins d'images ici !
+        // Tes mots doux et les photos de VOUS (quand elle clique sur un objet)
         const mesSouvenirs = {
             fleurs: { 
-                texte: "Pour la plus belle des fleurs de mon jardin 🌸", 
-                image: "chemin/vers/ta-photo-fleurs.jpg" // Mets le lien de ta photo ici
+                texte: "Pour la plus belle des fleurs 🌸", 
+                image: "images/photo_nous_fleurs.jpg" 
             },
             biscuit: { 
-                texte: "La chance m'a souri le jour où je t'ai rencontrée 🥠", 
-                image: "" // Laisse vide si tu ne veux mettre qu'un texte pour cet objet
+                texte: "La chance m'a souri le jour où je t'ai rencontrée ✨", 
+                image: "" 
             },
             chocolat: { 
-                texte: "Tu es bien plus douce que tout ça réuni 🍫", 
-                image: "chemin/vers/ta-photo-chocolat.jpg" 
+                texte: "Tu es encore plus douce que ça 🍫", 
+                image: "images/photo_nous_resto.jpg" 
             },
             peluche: { 
-                texte: "Un petit câlin virtuel en attendant de se voir ! 🧸", 
-                image: "chemin/vers/ta-photo-peluche.jpg" 
+                texte: "Un petit câlin virtuel ! 🧸", 
+                image: "images/photo_nous_calin.jpg" 
             }
         };
 
-        // === 2. SÉLECTION DES ÉLÉMENTS ===
         const btnCadeau = document.getElementById('gift-btn');
         const conteneurCadeau = document.getElementById('gift-container');
         const boutonsObjets = document.querySelectorAll('.item-btn');
@@ -189,42 +197,35 @@
         const imageModale = document.getElementById('modal-img');
         const texteModale = document.getElementById('modal-text');
 
-        // === 3. LES ACTIONS (CLICS) ===
-
-        // Quand on clique sur le cadeau : on ajoute/retire la classe pour lancer l'animation CSS
+        // Animation d'ouverture du cadeau
         btnCadeau.addEventListener('click', () => {
             conteneurCadeau.classList.toggle('container-opened');
         });
 
-        // Quand on clique sur un objet sorti du cadeau
+        // Affichage de la photo/du mot
         boutonsObjets.forEach(bouton => {
             bouton.addEventListener('click', () => {
-                // On récupère quel objet a été cliqué (ex: "fleurs")
                 const idObjet = bouton.getAttribute('data-id');
                 const donnees = mesSouvenirs[idObjet];
 
-                // On met à jour le texte
                 texteModale.innerText = donnees.texte;
                 
-                // On met à jour l'image (si elle existe)
                 if (donnees.image !== "") {
                     imageModale.src = donnees.image;
                     imageModale.classList.remove('hidden');
                 } else {
-                    imageModale.classList.add('hidden'); // On cache l'image s'il n'y en a pas
+                    imageModale.classList.add('hidden');
                 }
 
-                // On affiche la fenêtre
                 modale.classList.remove('hidden');
             });
         });
 
-        // Pour fermer la fenêtre avec la croix
+        // Fermeture de la modale
         btnFermer.addEventListener('click', () => {
             modale.classList.add('hidden');
         });
 
-        // Pour fermer la fenêtre en cliquant dans le fond noir
         modale.addEventListener('click', (e) => {
             if (e.target === modale) {
                 modale.classList.add('hidden');
