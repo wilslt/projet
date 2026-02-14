@@ -79,7 +79,7 @@
         /* Peluche : En bas à droite */
         .item-btn[data-id="peluche"]  { --x: 250px;  --y: 300px; }
 
-        /* NOUVEAU : Coeur bandé (En haut à droite) */
+        /* Coeur bandé (En haut à droite) */
         .item-btn[data-id="coeur"] { 
             --x: 300px;  /* Décalé vers la droite */
             --y: -150px; /* Décalé vers le haut */
@@ -149,6 +149,10 @@
 </head>
 <body>
 
+    <audio id="player-audio" loop>
+        <source src="Elton John - Tiny Dancer (mp3cut.net).mp3" type="audio/mpeg">
+    </audio>
+
     <div id="gift-container">
         <button id="gift-btn" class="gift-btn">
             <img id="gift-img" src="IMG_0126-removebg-preview.png" alt="Ouvrir le cadeau">
@@ -195,10 +199,9 @@
                 texte: "câlin jojo/sharko/toto&ninetta/reynaldo/MrBlue/ollie et même lapinou 🧸", 
                 image: "bigfernandnousdeux.png" 
             },
-            // === AJOUTE TON TEXTE ICI POUR LE COEUR ===
             coeur: {
-                texte: "Joyeuse Saint Valentin, je t'aime ❤️  ", 
-                image: "" // Tu peux mettre une image si tu veux, sinon laisse les guillemets vides
+                texte: "Joyeuse Saint Valentin, je t'aime ❤️.. ..", 
+                image: "" 
             }
         };
 
@@ -206,19 +209,26 @@
         const imgCadeau = document.getElementById('gift-img'); 
         const conteneurCadeau = document.getElementById('gift-container');
         const boutonsObjets = document.querySelectorAll('.item-btn');
+        const audioPlayer = document.getElementById('player-audio'); // On récupère le lecteur musique
         
         const modale = document.getElementById('modal');
         const btnFermer = document.getElementById('close-btn');
         const imageModale = document.getElementById('modal-img');
         const texteModale = document.getElementById('modal-text');
 
-        // Animation d'ouverture ET changement d'image
+        // Animation d'ouverture ET changement d'image ET musique
         btnCadeau.addEventListener('click', () => {
             conteneurCadeau.classList.toggle('container-opened');
 
             if (conteneurCadeau.classList.contains('container-opened')) {
+                // Si le cadeau s'ouvre
                 imgCadeau.src = imageCadeauOuvert;
+                
+                // On lance la musique
+                audioPlayer.volume = 0.5; // Volume à 50%
+                audioPlayer.play();
             } else {
+                // Si le cadeau se ferme
                 imgCadeau.src = imageCadeauFerme;
             }
         });
