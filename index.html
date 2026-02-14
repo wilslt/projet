@@ -27,7 +27,7 @@
             align-items: center;
         }
 
-        /* Le bouton cadeau principal (transparent, on ne verra que ton image) */
+        /* Le bouton cadeau principal */
         .gift-btn {
             background: none;
             border: none;
@@ -38,12 +38,13 @@
         }
 
         .gift-btn img {
-            width: 120px; /* Taille de ton image de cadeau */
+            width: 250px; 
             filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.2));
+            transition: all 0.3s ease;
         }
 
         .gift-btn:hover {
-            transform: scale(1.1) rotate(5deg);
+            transform: scale(1.05) rotate(3deg);
         }
 
         /* === LES OBJETS CACHÉS === */
@@ -56,38 +57,48 @@
             z-index: 5;
             top: 50%;
             left: 50%;
-            margin-top: -30px; /* Moitié de la hauteur */
-            margin-left: -30px; /* Moitié de la largeur */
-            pointer-events: none; /* CORRECTION DU BUG : impossible de cliquer quand c'est caché */
+            transform: translate(-50%, -50%);
+            pointer-events: none; 
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        /* Style pour les images (Fleurs, Choco, Peluche) */
         .item-btn img {
-            width: 60px; /* Taille des petits objets */
+            width: 300px; 
             filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.15));
         }
 
-        /* On définit les directions pour chaque objet avec des variables CSS */
-        .item-btn[data-id="fleurs"]   { --x: -110px; --y: -110px; }
-        .item-btn[data-id="biscuit"]  { --x: 110px;  --y: -110px; }
-        .item-btn[data-id="chocolat"] { --x: -110px; --y: 110px; }
-        .item-btn[data-id="peluche"]  { --x: 110px;  --y: 110px; }
+        /* === POSITIONS === */
+        
+        /* Fleurs : En haut au centre */
+        .item-btn[data-id="fleurs"]   { --x: 0px;    --y: -300px; }
+        
+        /* Chocolat : En bas à gauche */
+        .item-btn[data-id="chocolat"] { --x: -250px; --y: 300px; }
+        
+        /* Peluche : En bas à droite */
+        .item-btn[data-id="peluche"]  { --x: 250px;  --y: 300px; }
+
+        /* NOUVEAU : Coeur bandé (En haut à droite) */
+        .item-btn[data-id="coeur"] { 
+            --x: 300px;  /* Décalé vers la droite */
+            --y: -150px; /* Décalé vers le haut */
+            font-size: 4rem; /* Taille de l'emoji */
+            filter: drop-shadow(0px 4px 5px rgba(0,0,0,0.2));
+        }
 
         /* === ANIMATION QUAND LE CADEAU EST OUVERT === */
         .container-opened .item-btn {
             opacity: 1;
-            pointer-events: auto; /* On rend les clics possibles */
-            /* On utilise les variables pour qu'ils aillent à leur place */
-            transform: translate(var(--x), var(--y)) scale(1);
+            pointer-events: auto;
+            transform: translate(calc(var(--x) - 50%), calc(var(--y) - 50%)) scale(1);
         }
 
-        /* CORRECTION DU BUG : On garde la position (var) pendant le zoom (scale) au survol */
         .container-opened .item-btn:hover {
-            transform: translate(var(--x), var(--y)) scale(1.2);
+            transform: translate(calc(var(--x) - 50%), calc(var(--y) - 50%)) scale(1.15);
         }
 
-        /* === LA FENÊTRE QUI AFFICHE LA PHOTO/MOT (MODALE) === */
-        /* (Même code que la dernière fois, il marchait très bien !) */
+        /* === MODALE === */
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -127,9 +138,7 @@
             margin-bottom: 15px;
             object-fit: contain;
         }
-        #modal-img.hidden {
-            display: none;
-        }
+        #modal-img.hidden { display: none; }
         #modal-text {
             font-size: 1.2rem;
             color: #333;
@@ -142,20 +151,21 @@
 
     <div id="gift-container">
         <button id="gift-btn" class="gift-btn">
-            <img src="images/cadeau.png" alt="Ouvrir le cadeau">
+            <img id="gift-img" src="IMG_0126-removebg-preview.png" alt="Ouvrir le cadeau">
         </button>
         
         <button class="item-btn" data-id="fleurs">
-            <img src="images/bouquet.png" alt="Fleurs">
-        </button>
-        <button class="item-btn" data-id="biscuit">
-            <img src="images/biscuit.png" alt="Biscuit chinois">
+            <img src="IMG_0121-removebg-preview.png" alt="Fleurs">
         </button>
         <button class="item-btn" data-id="chocolat">
-            <img src="images/chocolat.png" alt="Chocolat">
+            <img src="IMG_0130-removebg-preview.png" alt="Chocolat">
         </button>
         <button class="item-btn" data-id="peluche">
-            <img src="images/peluche.png" alt="Peluche">
+            <img src="IMG_0127-removebg-preview.png" alt="Peluche">
+        </button>
+
+        <button class="item-btn" data-id="coeur">
+            ❤️‍🩹
         </button>
     </div>
 
@@ -168,27 +178,32 @@
     </div>
 
     <script>
-        // Tes mots doux et les photos de VOUS (quand elle clique sur un objet)
+        // === CONFIGURATION DES IMAGES DU CADEAU ===
+        const imageCadeauFerme = "IMG_0126-removebg-preview.png";
+        const imageCadeauOuvert = "IMG_0129-removebg-preview.png"; 
+
         const mesSouvenirs = {
             fleurs: { 
-                texte: "Pour la plus belle des fleurs 🌸", 
-                image: "images/photo_nous_fleurs.jpg" 
-            },
-            biscuit: { 
-                texte: "La chance m'a souri le jour où je t'ai rencontrée ✨", 
-                image: "" 
+                texte: "Ben t'adores les fleurs quand même... 🌸", 
+                image: "fleurs_emie.png" 
             },
             chocolat: { 
-                texte: "Tu es encore plus douce que ça 🍫", 
-                image: "images/photo_nous_resto.jpg" 
+                texte: "Être avec toi c'était encore mieux que manger tout le paquet, merci❤️🍫", 
+                image: "nicenousdeux.png" 
             },
             peluche: { 
-                texte: "Un petit câlin virtuel ! 🧸", 
-                image: "images/photo_nous_calin.jpg" 
+                texte: "câlin jojo/sharko/toto&ninetta/reynaldo/MrBlue/ollie et même lapinou 🧸", 
+                image: "bigfernandnousdeux.png" 
+            },
+            // === AJOUTE TON TEXTE ICI POUR LE COEUR ===
+            coeur: {
+                texte: "Joyeuse Saint Valentin, je t'aime ❤️  ", 
+                image: "" // Tu peux mettre une image si tu veux, sinon laisse les guillemets vides
             }
         };
 
         const btnCadeau = document.getElementById('gift-btn');
+        const imgCadeau = document.getElementById('gift-img'); 
         const conteneurCadeau = document.getElementById('gift-container');
         const boutonsObjets = document.querySelectorAll('.item-btn');
         
@@ -197,12 +212,18 @@
         const imageModale = document.getElementById('modal-img');
         const texteModale = document.getElementById('modal-text');
 
-        // Animation d'ouverture du cadeau
+        // Animation d'ouverture ET changement d'image
         btnCadeau.addEventListener('click', () => {
             conteneurCadeau.classList.toggle('container-opened');
+
+            if (conteneurCadeau.classList.contains('container-opened')) {
+                imgCadeau.src = imageCadeauOuvert;
+            } else {
+                imgCadeau.src = imageCadeauFerme;
+            }
         });
 
-        // Affichage de la photo/du mot
+        // Affichage de la modale
         boutonsObjets.forEach(bouton => {
             bouton.addEventListener('click', () => {
                 const idObjet = bouton.getAttribute('data-id');
@@ -210,7 +231,7 @@
 
                 texteModale.innerText = donnees.texte;
                 
-                if (donnees.image !== "") {
+                if (donnees.image && donnees.image !== "") {
                     imageModale.src = donnees.image;
                     imageModale.classList.remove('hidden');
                 } else {
@@ -221,7 +242,7 @@
             });
         });
 
-        // Fermeture de la modale
+        // Fermeture modale
         btnFermer.addEventListener('click', () => {
             modale.classList.add('hidden');
         });
